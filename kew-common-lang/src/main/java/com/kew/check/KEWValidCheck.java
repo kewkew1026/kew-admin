@@ -24,6 +24,16 @@ public class KEWValidCheck extends AbstractAnnotationCheck<KEWValid> {
     private boolean required;
     private int min;
     private int max;
+    private String name;
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getMin() {
         return min;
@@ -65,6 +75,7 @@ public class KEWValidCheck extends AbstractAnnotationCheck<KEWValid> {
         setRequired(constraintAnnotation.required());
         setMin(constraintAnnotation.min());
         setMax(constraintAnnotation.max());
+        setName(constraintAnnotation.name());
     }
 
     @Override

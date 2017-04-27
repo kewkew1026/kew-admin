@@ -3,6 +3,7 @@ package com.kew.utils;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.net.URL;
@@ -105,6 +106,39 @@ public class FileUtil {
     }
 
     public static void writeFile(String filePath, String fileName, String valStr) {
+        FileOutputStream out = null;
+        try {
+            File pex = new File(filePath);
+            if(!pex.exists()){
+                if(!pex.mkdirs()){
+                    throw new Exception("创建文件失败,请检查路径") ;
+                }
+            }
+            if(StringUtils.isEmpty(fileName)){
+                return;
+            }
+            File file = new File(filePath+fileName);
+            if(file.exists()){
+                file.delete();
+            }
+            if(!file.createNewFile()){
+                throw new Exception("创建文件失败,请检查路径") ;
+            }
+            out= new FileOutputStream(file,true);
+            out.write(valStr.getBytes("UTF-8"));
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            logger.error("保存或创建文件失败", e);
+        }finally{
+            if(out!=null){
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    throw new RuntimeException("创建文件失败,请检查路径",e);
+                }
+            }
+        }
     }
 
     /***

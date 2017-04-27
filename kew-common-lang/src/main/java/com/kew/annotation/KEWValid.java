@@ -21,4 +21,5 @@ public @interface KEWValid {
     String regModel() default Constants.XSS;
     boolean required() default false;
     String message() default "com.dsa.message.error.model";
+    String name() ;
 }

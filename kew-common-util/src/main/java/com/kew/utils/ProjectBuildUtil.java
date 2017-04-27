@@ -48,10 +48,10 @@ public class ProjectBuildUtil {
         String groupId = config.getString("groupId");
 
         //输出目录,以.结尾
-        String apath = ".";
+        String rootPath = "/Users/qiudanping/Desktop/test/";
 
         //截取目录
-        parentPath = apath.substring(0,apath.length()-1);
+        parentPath = rootPath.substring(0,rootPath.length()-1);
 
         Map<String,Object> paramMap = new HashMap<String,Object>();
         paramMap.put("c",config);
