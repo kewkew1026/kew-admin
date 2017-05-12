@@ -16,14 +16,14 @@
 		http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!-- 客户端Hessian代理工厂Bean -->
-    <!--<bean id="messageScheduingService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">-->
+    <!--<bean id="serviceName" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">-->
     <!-- 请求代理Servlet路径 -->
     <!--<property name="serviceUrl">-->
-    <!--<value>http://localhost:8080/kew-${c.groupId}-innerapi/messageScheduingService.hs</value>  -->
+    <!--<value>http://localhost:8080/kew-${c.groupId}-innerapi/serviceName.hs</value>  -->
     <!--</property>  -->
     <!-- 接口定义 -->
     <!--<property name="serviceInterface">  -->
-    <!--    <value>com.kew.${c.groupId}.service.MessageScheduingService</value>  -->
+    <!--    <value>com.kew.${c.groupId}.service.ServiceName</value>  -->
     <!--</property>  -->
     <!--</bean>-->
 

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kew.boss.mapper.UserRbacMapper">
+
+	<!-- 用户信息数据映射 -->
+	<resultMap type="User" id="userResultMap">
+		<id property="userId" column="USER_ID" />
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="pwd" column="PWD" />
+	</resultMap>
+
+	<!-- 角色信息数据映射 -->
+	<resultMap type="Role" id="roleResultMap">
+		<id property="roleId" column="ROLE_ID" />
+		<result property="roleNm" column="ROLE_NM" />
+	</resultMap>
+	
+	<!-- 用户组信息数据映射 -->
+	<resultMap type="UserGroup" id="userGroupResultMap">
+        <id property="groupId" column="GRP_ID" />
+        <result property="groupName" column="GRP_NM"/>
+    </resultMap>
+    
+   	<!-- 根据用户登录id获取用户信息 -->
+	<select id="getUserByLoginId" parameterType="string" resultMap="userResultMap">
+		SELECT user_id,
+		       login_id,
+		       pwd
+		FROM   t_p_user
+		WHERE  login_id = #{loginId}
+	</select>
+	
+   	<!-- 根据用户id获取属于该用户的角色信息 （含用户组继承的角色）-->
+	<select id="getRloesByUserId" parameterType="long" resultMap="roleResultMap">
+		SELECT DISTINCT t0.role_id
+		FROM   (SELECT t2.role_id
+		        FROM   t_p_user_grp_user t1,
+		               t_p_user_grp_role t2
+		        WHERE  t1.grp_id = t2.grp_id
+		        AND    t1.user_id = #{userId}
+		        UNION ALL
+		        SELECT t3.role_id
+		        FROM   t_p_user_role t3
+		        WHERE  t3.user_id = #{userId}) t0
+	</select>
+	
+	<!-- 根据用户id获取不属于该用户的角色信息 （不含用户组继承的角色）-->
+	<select id="getUnRloesNotGrpByUserId" parameterType="long" resultMap="roleResultMap">
+		SELECT t1.role_id,
+		       t1.role_nm
+		FROM   t_p_role t1
+		WHERE  NOT EXISTS (SELECT 'X'
+		        FROM   t_p_user_role t2
+		        WHERE  t1.role_id = t2.role_id
+		        AND    t2.user_id = #{userId})
+		ORDER BY t1.role_nm
+	</select>
+	
+	<!-- 根据用户id获取属于该用户的角色信息 （不含用户组继承的角色）-->
+	<select id="getRloesNotGrpByUserId" parameterType="long" resultMap="roleResultMap">
+		SELECT t1.role_id,
+		       t1.role_nm
+		FROM   t_p_role      t1,
+		       t_p_user_role t2
+		WHERE  t1.role_id = t2.role_id
+		AND    t2.user_id = #{userId}
+		ORDER BY t1.role_nm
+	</select>
+	
+	<!-- 根据用户id获取属于该用户的用户组信息-->
+	<select id="getUserGroupByUserId" parameterType="long" resultMap="userGroupResultMap">
+		SELECT t1.grp_id,
+		       t1.grp_nm
+		FROM   t_p_user_grp      t1,
+		       t_p_user_grp_user t2
+		WHERE  t1.grp_id = t2.grp_id
+		AND    t2.user_id = #{userId}
+		ORDER BY t1.grp_nm
+	</select>
+	
+	<!-- 根据用户id获取不属于该用户的用户组信息-->
+	<select id="getUnUserGroupByUserId" parameterType="long" resultMap="userGroupResultMap">
+		SELECT t1.grp_id,
+		       t1.grp_nm
+		FROM   t_p_user_grp t1
+		WHERE  NOT EXISTS (SELECT 'X'
+		        FROM   t_p_user_grp_user t2
+		        WHERE  t1.grp_id = t2.grp_id
+		        AND    t2.user_id = #{userId})
+		        ORDER BY t1.grp_nm
+	</select>
+	
+	<!-- 根据用户id删除该用户的用户组信息-->
+	<delete id="delUserGrpByUserId" parameterType="long" >
+		DELETE FROM t_p_user_grp_user
+		WHERE  user_id = #{userId}
+	</delete>
+	
+	<!-- 根据用户id删除该用户的角色信息-->
+	<update id="delUserRoleByUserId" parameterType="long" >
+		 DELETE FROM t_p_user_role
+		 WHERE  user_id = #{userId}
+	</update>
+	
+	<!-- 插入用户组信息-->
+	<insert id="instUserGroupUser" parameterType="UserGroupUser" >
+		INSERT INTO t_p_user_grp_user
+		    (grp_id,
+		     user_id)
+		VALUES
+		    (#{grpId},
+		     #{userId})
+	</insert>
+	
+	<!-- 插入用户角色信息-->
+	<insert id="instUserRole" parameterType="UserRole" >
+		INSERT INTO t_p_user_role
+		    (user_id,
+		     role_id)
+		VALUES
+		    (#{userId},
+		     #{roleId})
+	</insert>
+
+</mapper>

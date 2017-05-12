@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kew.boss.mapper.RoleTUserGroupMapper">
+
+	<resultMap type="RoleTUserGroup" id="resultMap">
+		<id property="roleId" column="ROLE_ID" />
+		<result property="groupId" column="GRP_ID" />
+	</resultMap>
+
+	<select id="add" parameterType="RoleTUserGroup" resultMap="resultMap">
+	    INSERT INTO T_P_USER_GRP_ROLE
+	      (ROLE_ID, GRP_ID)
+	    VALUES
+	      (#{roleId, jdbcType=INTEGER}, #{groupId, jdbcType=INTEGER})
+	</select>
+
+	<update id="del" parameterType="Integer">
+		DELETE T_P_USER_GRP_ROLE WHERE ROLE_ID = #{roleId}
+	</update>
+	
+</mapper>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kew.boss.mapper.UserInfoMapper">
+
+	<resultMap type="UserInfo" id="userInfoResultMap">
+		<id property="userId" column="USER_ID" />
+		<result property="name" column="USER_NAME"/>
+		<result property="userDepartment" column="DEPART_NAME" />
+		<result property="userPosition" column="POSI_NAME" />
+		<result property="userDepartId" column="USER_DEPART_ID" />
+		<result property="userPosiId" column="USER_POSI_ID" />
+		<result property="userGroupId" column="USER_GROUPID"/>
+		<result property="userStatus" column="USER_STATUS"/>
+		<result property="loginId" column="LOGIN_ID"/>
+		<result property="mgrproles" column="mgrproles"/>
+		<result property="mroles" column="mroles"/>
+	</resultMap>
+	
+	<select id="getUserInfoById" parameterType="long" resultMap="userInfoResultMap">
+		 SELECT ua.USER_ID as USER_ID,
+		        ua.USER_NAME as USER_NAME,
+		        ua.USER_GROUPID as USER_GROUPID,
+		        ua.USER_STATUS as USER_STATUS,
+		        ua.USER_DEPART_ID as USER_DEPART_ID,
+		        ua.USER_POSI_ID as USER_POSI_ID,
+		        u.LOGIN_ID as LOGIN_ID
+		   FROM T_P_USER_ATTRI ua,T_P_USER u 
+		  WHERE ua.USER_ID = #{userId} and u.USER_ID = ua.USER_ID
+		  
+	</select>
+    
+    <select id="getUserInfoByCondition" parameterType="UserInfo" resultMap="userInfoResultMap" >
+		SELECT t1.USER_ID,
+		       t1.USER_NAME,
+		       t1.USER_GROUPID,
+		       t1.USER_STATUS,
+		       t1.USER_DEPART_ID,
+		       t1.USER_POSI_ID,
+		       t2.LOGIN_ID,
+               (select tpug.GRP_NM from t_p_user_grp_user tpugu,t_p_user_grp tpug where tpug.GRP_ID= tpugu.GRP_ID and tpugu.USER_ID=t1.USER_ID) as mgrproles,
+               (select concat_ws(',',(select group_concat(tpr.ROLE_NM) from t_p_user_grp_user tpugu,t_p_user_grp_role tpugr,t_p_role tpr where tpugu.GRP_ID = tpugr.GRP_ID and tpr.ROLE_ID = tpugr.ROLE_ID and tpugu.USER_ID=t1.USER_ID),(select group_concat(tpr.ROLE_NM) from t_p_role tpr,t_p_user_role tpur where tpur.ROLE_ID = tpr.ROLE_ID and tpur.USER_ID=t1.USER_ID)) from dual) as mroles
+		  FROM T_P_USER_ATTRI t1,T_P_USER t2
+		<where>
+			t1.USER_ID = t2.USER_ID 
+		    <if test="name!=null and name!='' ">
+		        AND (t1.USER_NAME like '%' #{name} '%' OR t2.LOGIN_ID like '%' #{name} '%')
+		    </if>
+		    <if test="userStatus!=null and userStatus!='-1' ">
+		        AND t1.USER_STATUS = #{userStatus}
+		    </if>
+		    
+		    <if test="userGroupId > 0 ">
+		        AND exists(select t3.USER_ID from t_p_user_grp_user t3 where t3.USER_ID=t1.USER_ID and t3.GRP_ID = #{userGroupId})
+		    </if>
+		    
+		    <if test="oneRoleID > 0 ">
+		        AND exists(select t4.USER_ID from t_p_user_role t4 where t4.USER_ID=t1.USER_ID and t4.ROLE_ID = #{oneRoleID})
+		    </if>
+		    
+		</where>
+		ORDER BY T1.USER_STATUS DESC
+		
+	</select>
+    
+    <select id="getAllUser" resultMap="userInfoResultMap">
+		 SELECT USER_ID,
+		        USER_NAME,
+		        USER_GROUPID,
+		        USER_STATUS
+		   FROM T_P_USER_ATTRI
+    </select>
+    
+    <update id="updateUserInfo" parameterType="UserInfo">
+		UPDATE T_P_USER_ATTRI
+		   SET USER_NAME = #{name},USER_STATUS = #{userStatus}
+		WHERE USER_ID = #{userId}
+    </update>
+    
+    <insert id="insertUserInfo" parameterType="UserInfo">
+		INSERT INTO T_P_USER_ATTRI
+		  (USER_ID, USER_NAME, USER_DEPART_ID, USER_POSI_ID,USER_STATUS)
+		VALUES
+		  (#{userId},
+		   #{name},
+		   #{userDepartId,jdbcType=VARCHAR},
+		   #{userPosiId,jdbcType=VARCHAR},'1')
+    </insert>
+    
+    <!-- 
+    <delete id="deleteUserInfo" parameterType="long">
+        DELETE FROM T_P_USER_ATTRI WHERE USER_ID = #{userId}
+    </delete>
+     -->
+     <update id="deleteUserInfo" parameterType="long">
+		UPDATE T_P_USER_ATTRI
+		   SET USER_STATUS = '0'
+		 WHERE USER_ID = #{0}
+    </update>
+    
+    <select id="getUserTotal" parameterType="UserInfo" resultType="int" >
+		SELECT COUNT(1)
+		  FROM T_P_USER_ATTRI
+		<where>
+			<if test="name!=null and name!='' ">
+		        AND USER_NAME like '%'|| #{name}||'%'
+		    </if>
+		    
+		    <if test="userStatus!=null and userStatus!='-1' ">
+		        AND USER_STATUS = #{userStatus}
+		    </if>
+		</where>
+	</select>
+    
+</mapper>

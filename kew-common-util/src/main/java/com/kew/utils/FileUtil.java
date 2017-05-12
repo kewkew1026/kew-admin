@@ -102,7 +102,30 @@ public class FileUtil {
      * @return
      */
     private static String loadFtlStr(String absolutePath, Class<FtlBuild> ftlBuildClass) {
-        return "";
+        try {
+            return readFile(loadFtlFile(absolutePath,ftlBuildClass));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /***
+     * 加载ftl文件
+     * @param path
+     * @param cls
+     * @return
+     * @throws Exception
+     */
+    public static InputStream loadFtlFile(String path,Class<?> cls) throws Exception{
+        InputStream is  = null;
+        File f = new File(path);
+        if(!f.exists()){
+            is = cls.getResourceAsStream(path);
+        }else{
+            is = new FileInputStream(f);
+        }
+        return is;
     }
 
     public static void writeFile(String filePath, String fileName, String valStr) {
@@ -165,7 +188,7 @@ public class FileUtil {
             if(mFilePath.length!=2){
                 mFilePath = ftlFilePath.split(sourcePath.replace("/","\\\\"));
             }
-            String filePath = sourcePath+mFilePath[1].replace(ftlFileName,"");
+            String filePath = targetPath+mFilePath[1].replace(ftlFileName,"");
 
             String temp = FileUtil.loadFtlStr(file.getAbsolutePath(),FtlBuild.class);
             String valStr = StringUtil.getProcessValue(contentMap,temp);

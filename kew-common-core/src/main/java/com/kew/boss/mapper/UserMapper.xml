@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kew.boss.mapper.UserMapper">
+
+	<resultMap type="User" id="userResultMap">
+		<id property="userId" column="USER_ID" />
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="pwd" column="PWD" />
+	</resultMap>
+
+	<select id="getUserById" parameterType="long" resultMap="userResultMap">
+		SELECT USER_ID, LOGIN_ID, PWD FROM T_P_USER WHERE USER_ID = #{id}
+	</select>
+	
+	<select id="getUserByName" parameterType="string" resultMap="userResultMap">
+		SELECT USER_ID, LOGIN_ID, PWD FROM T_P_USER WHERE LOGIN_ID = #{name}
+	</select>
+	
+	
+	
+	
+	<insert id="insertUser" parameterType="User">
+		INSERT INTO T_P_USER
+		  (LOGIN_ID, PWD)
+		VALUES
+		  (#{loginId,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR})
+		  <selectKey keyProperty="userId" order="AFTER" resultType="long">
+             SELECT last_insert_id() as userId
+          </selectKey>
+	</insert>
+	
+	<update id="updateUser" parameterType="User">
+	    UPDATE T_P_USER SET LOGIN_ID = #{loginId} WHERE USER_ID = #{userId}
+	</update>
+	
+	<update id="updateUserPassword" parameterType="User">
+	    UPDATE T_P_USER SET PWD = #{pwd} WHERE USER_ID = #{userId}
+	</update>
+    
+    <delete id="deleteUser" parameterType="long">
+        DELETE FROM T_P_USER WHERE USER_ID = #{userId}
+    </delete>
+    
+    <select id="getUserByNameAndPwd" resultMap="userResultMap">
+		SELECT t1.USER_ID, t1.LOGIN_ID, t1.PWD 
+		FROM T_P_USER t1,T_P_USER_ATTRI t2
+		WHERE LOGIN_ID = #{0,jdbcType=VARCHAR} AND PWD = #{1,jdbcType=VARCHAR}
+		AND t1.USER_ID = t2.USER_ID
+		AND t2.USER_STATUS = '1'
+	</select>
+</mapper>

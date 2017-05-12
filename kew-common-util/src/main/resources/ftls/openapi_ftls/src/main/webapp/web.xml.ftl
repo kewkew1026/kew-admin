@@ -10,7 +10,7 @@
 
     <context-param>
         <param-name>webAppRootKey</param-name>
-        <param-value>openapi</param-value>
+        <param-value>${c.groupId}-openapi</param-value>
     </context-param>
 
     <filter>

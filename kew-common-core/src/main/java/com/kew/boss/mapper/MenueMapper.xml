@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kew.boss.mapper.MenueMapper">
+
+	<!-- 菜单数据映射 -->
+	<resultMap type="Menue" id="menueResultMap">
+		<id property="menueId" column="MENUE_ID" />
+		<result property="menueNm" column="MENUE_NM" />
+		<result property="funOptId" column="FUN_OPT_ID" />
+		<result property="parMenueId" column="PAR_MENUE_ID" />
+		<result property="remarks" column="REMARKS" />
+		<result property="state" column="STATE" />
+		<result property="menueOrder" column="MENUE_ORDER" />
+		<result property="staffId" column="STAFF_ID" />
+		<result property="stateUpdtTime" column="STATE_UPDT_TIME" />
+		<result property="menueUrl" column="URL" />
+	</resultMap>
+
+	<!-- 根据菜单id查询菜单信息 -->
+	<select id="srchMenue"  parameterType="long" resultMap="menueResultMap">
+		SELECT menue_id,
+		       menue_nm,
+		       fun_opt_id,
+		       par_menue_id,
+		       remarks,
+		       state,
+		       menue_order,
+		       staff_id,
+		       state_updt_time
+		FROM   t_p_menue
+		WHERE  menue_id =  #{menueId}
+	</select>
+	
+	<!-- 获取所有的菜单信息 -->
+	<select id="getMenueList"  resultMap="menueResultMap">
+	    SELECT t1.menue_id,
+	           t1.menue_nm,
+	           t1.fun_opt_id,
+	           t1.par_menue_id,
+	           t1.remarks,
+	           t1.state,
+	           t1.menue_order,
+	           t2.url
+	    FROM   t_p_menue t1
+	    LEFT   JOIN t_p_fun_opt t2
+	    ON (t1.fun_opt_id = t2.fun_opt_id)
+	</select>
+		
+	<!-- 插入一条菜单信息 -->
+	<insert id="insertMenue" parameterType="Menue">
+		INSERT INTO t_p_menue
+		    (
+		     menue_nm,
+		     fun_opt_id,
+		     par_menue_id,
+		     remarks,
+		     state,
+		     menue_order,
+		     staff_id,
+		     state_updt_time)
+		VALUES
+		    (
+		     #{menueNm},
+		     #{funOptId},
+		     #{parMenueId},
+		     #{remarks, jdbcType=VARCHAR},
+		     #{state},
+		     #{menueOrder},
+		     #{staffId},
+		     now())
+	</insert>
+	
+	<!-- 更新一条菜单信息 -->
+	<update id="updateMenue" parameterType="Menue">
+		UPDATE t_p_menue
+		SET    menue_nm        = #{menueNm},
+		       fun_opt_id      = #{funOptId},
+		       par_menue_id    = #{parMenueId},
+		       remarks         = #{remarks, jdbcType=VARCHAR},
+		       state           = #{state},
+		       menue_order     = #{menueOrder},
+		       staff_id        = #{staffId},
+		       state_updt_time = now()
+		WHERE  menue_id =  #{menueId}
+	</update>
+
+	<!-- 删除一条菜单信息 -->
+	<delete id="delMenue" parameterType="long">
+		DELETE FROM t_p_menue
+		WHERE  menue_id =  #{menueId}
+	</delete>
+	
+	<!-- 更具菜单资源id查询菜单信息 -->
+	<select id="findByFunOptId"  parameterType="long" resultMap="menueResultMap">
+		SELECT menue_id,
+		       menue_nm,
+		       fun_opt_id,
+		       par_menue_id,
+		       remarks,
+		       state,
+		       menue_order,
+		       staff_id,
+		       state_updt_time
+		FROM   t_p_menue
+		WHERE  FUN_OPT_ID =  #{funOptId}
+	</select>	
+	
+	<!-- 根据菜单资源id查询菜单信息 -->
+	<select id="findNumber" resultType="int">
+		SELECT count(*) FROM t_p_menue
+		WHERE #{menueOrder} in
+		(SELECT MENUE_ORDER
+		FROM   t_p_menue
+		WHERE  PAR_MENUE_ID =  #{parMenueId})
+	</select>	
+	
+	<!-- 根据菜单资源id查询菜单信息(排除自己) -->
+	<select id="findNumberEdit" resultType="int">
+		SELECT count(*) FROM t_p_menue
+		WHERE #{menueOrder} in
+		(SELECT MENUE_ORDER
+		FROM   t_p_menue
+		WHERE  PAR_MENUE_ID =  #{parMenueId} AND MENUE_ORDER != #{menueOrder})
+	</select>	
+	
+</mapper>

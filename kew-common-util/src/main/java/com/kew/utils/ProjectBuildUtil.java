@@ -23,7 +23,7 @@ public class ProjectBuildUtil {
     /***
      * 所支持生成的项目
      */
-    private static String []models={"common","api","basic","core","innerapi","openapi","mps","website","boss","cms"};
+    private static String []models={"common","api","basic","core","innerapi","openapi","boss","mps","website"}; /*,"cms"*/
 
 
     public  static void main(String []configFileNames){

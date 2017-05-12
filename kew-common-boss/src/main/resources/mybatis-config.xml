@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <settings>
+        <setting name="cacheEnabled" value="false"/>
+        <setting name="useGeneratedKeys" value="false"/>
+    </settings>
+
+    <typeAliases>
+
+        <typeAlias type="com.kew.boss.model.User" alias="User"/>
+        <typeAlias type="com.kew.boss.model.FunRole" alias="FunRole"/>
+        <typeAlias type="com.kew.boss.model.Menue" alias="Menue"/>
+
+        <typeAlias type="com.kew.boss.model.FunOpt" alias="FunOpt"/>
+        <typeAlias type="com.kew.boss.model.RoleTFunOpt" alias="RoleTFunOpt"/>
+        <typeAlias type="com.kew.boss.model.RoleTUserGroup" alias="RoleTUserGroup"/>
+
+        <typeAlias type="com.kew.boss.model.UserInfo" alias="UserInfo"/>
+        <typeAlias type="com.kew.boss.model.Role" alias="Role"/>
+        <typeAlias type="com.kew.boss.model.UserGroup" alias="UserGroup"/>
+
+        <typeAlias type="com.kew.boss.model.UserRole" alias="UserRole"/>
+        <typeAlias type="com.kew.boss.model.UserGroupUser" alias="UserGroupUser"/>
+
+        <typeAlias type="com.kew.boss.model.News" alias="News"/>
+        <typeAlias type="com.kew.boss.model.Message" alias="Message"/>
+        <typeAlias type="com.kew.boss.model.MessageType" alias="MessageType"/>
+
+    </typeAliases>
+    <!--<plugins>-->
+        <!--<plugin interceptor="com.kedou.myPage.DiclectStatementHandlerInterceptor" />-->
+        <!--<plugin interceptor="com.kedou.myPage.DiclectResultSetHandlerInterceptor" />-->
+    <!--</plugins>-->
+
+</configuration>

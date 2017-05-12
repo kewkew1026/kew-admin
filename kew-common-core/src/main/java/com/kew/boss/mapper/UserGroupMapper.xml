@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kew.boss.mapper.UserGroupMapper">
+    <resultMap type="UserGroup" id="userGroupResultMap">
+        <id property="groupId" column="GRP_ID" />
+        <result property="groupName" column="GRP_NM"/>
+    </resultMap>
+    
+    <select id="getAllUserGroup" resultMap="userGroupResultMap">
+        SELECT GRP_ID, GRP_NM FROM T_P_USER_GRP
+    </select>
+    
+    <select id="getUserGroupByName" parameterType="String" resultMap="userGroupResultMap">
+        SELECT GRP_ID, GRP_NM FROM T_P_USER_GRP WHERE GRP_NM = #{groupName}
+    </select>
+    
+    <select id="getUserGroupByCondition" parameterType="UserGroup" resultMap="userGroupResultMap">
+        SELECT GRP_ID, GRP_NM FROM T_P_USER_GRP
+        <where>
+		    <if test="groupName!=null and groupName!='' ">
+		        GRP_NM like '%' #{groupName} '%'
+		    </if>
+	    </where>
+    </select>
+    
+     <select id="getUserGroupTotal" parameterType="UserGroup" resultType="int">
+        SELECT COUNT(1) FROM T_P_USER_GRP
+        <where>
+		    <if test="groupName!=null and groupName!='' ">
+		        GRP_NM like '%' #{groupName} '%'
+		    </if>
+	    </where>
+    </select>
+    
+    <select id="getUserGroupById" parameterType="long" resultMap="userGroupResultMap">
+        SELECT GRP_ID, GRP_NM FROM T_P_USER_GRP WHERE GRP_ID = #{groupId}
+    </select>
+    
+    <insert id="addUserGroup" parameterType="UserGroup">
+        INSERT INTO T_P_USER_GRP (GRP_NM) VALUES ( #{groupName})
+    </insert>
+    
+    <update id="updateUserGroup" parameterType="UserGroup" >
+        UPDATE T_P_USER_GRP SET GRP_NM = #{groupName} WHERE GRP_ID = #{groupId}
+    </update>
+    
+    <delete id="deleteUserGroup" parameterType="long">
+        DELETE FROM T_P_USER_GRP WHERE GRP_ID = #{groupId}
+    </delete>
+    
+     <select id="findByRoleUserGroup" parameterType="long" resultMap="userGroupResultMap">
+        SELECT GRP_ID, GRP_NM
+		  FROM T_P_USER_GRP
+		 WHERE GRP_ID IN
+		       (SELECT GRP_ID FROM T_P_USER_GRP_ROLE WHERE ROLE_ID = #{roleId})
+		 ORDER BY GRP_NM
+    </select>
+    
+     <select id="findByRoleUnUserGroup" parameterType="long" resultMap="userGroupResultMap">
+        SELECT 
+            GRP_ID,GRP_NM
+        FROM 
+            T_P_USER_GRP
+        WHERE
+            GRP_ID NOT IN(SELECT GRP_ID FROM T_P_USER_GRP_ROLE WHERE  ROLE_ID=#{roleId})
+        ORDER BY GRP_NM
+    </select>
+    
+    <select id="isEnableDelUserGrp" parameterType="long" resultType="long">
+        SELECT 
+            A.NUM+B.NUM 
+        FROM
+            (SELECT COUNT(*) NUM FROM T_P_USER_GRP_USER U WHERE U.GRP_ID=#{userGrpId}) A,
+            (SELECT COUNT(*) NUM FROM T_P_USER_GRP_ROLE R WHERE R.GRP_ID=#{userGrpId}) B
+    </select>
+    
+</mapper>

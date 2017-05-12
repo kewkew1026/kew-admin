@@ -12,29 +12,29 @@ import javax.servlet.http.HttpServletResponse;
 
 public class JSONPFilter implements Filter {
 
-@Override
-public void init(FilterConfig filterConfig) throws ServletException {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
 
-}
+    }
 
-@Override
-public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-HttpServletRequest req = (HttpServletRequest)request;
-HttpServletResponse res = (HttpServletResponse)response;
-res.setHeader("Access-Control-Allow-Origin", "*");
-String callback = req.getParameter("callback");
-if(callback!=null&&!"".equals(callback.trim())){
-res.getOutputStream().print(callback+"(");
-}
-chain.doFilter(req, res);
-if(callback!=null&&!"".equals(callback.trim())){
-res.getOutputStream().print(");");
-}
-}
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest)request;
+        HttpServletResponse res = (HttpServletResponse)response;
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        String callback = req.getParameter("callback");
+        if(callback!=null&&!"".equals(callback.trim())){
+             res.getOutputStream().print(callback+"(");
+        }
+        chain.doFilter(req, res);
+        if(callback!=null&&!"".equals(callback.trim())){
+            res.getOutputStream().print(");");
+        }
+    }
 
-@Override
-public void destroy() {
+    @Override
+    public void destroy() {
 
-}
+    }
 
 }

@@ -6,9 +6,9 @@
 package com.kew.${c.groupId}.model.enums;
 import java.io.Serializable;
 
-import org.apache.commons.lang.StringUtils;
 
 import com.kew.service.ModelEnumService;
+import com.kew.utils.EnumUtil;
 /**
  *
  *
@@ -18,33 +18,38 @@ public enum ${c.modelName}ModelKeyEnum implements Serializable,ModelEnumService 
 		TEST("TEST","测试",null),
 		;
 		
-		private final String no;
-		private final String des;
+		private final String code;
+		private final String description;
 		private final Enum parent;
-		
-		/**
+
+		static{
+			EnumUtil.ENUMS_TO_VIEW.put("${(c.modelName+'_Model_Key')?lower_case}", ${c.modelName}ModelKeyEnum.values());
+		}
+
+
+/**
 		 * 私有构造函数
 		 * @param code
 		 * @param description
 		 */
-		${c.modelName}ModelKeyEnum(String no, String des,Enum parent) {
-			this.no = no;
-			this.des = des;
+		${c.modelName}ModelKeyEnum(String code, String description,Enum parent) {
+			this.code = code;
+			this.description = description;
 			this.parent = parent;
 		}
 
 		/**
-		 * @return Returns the no.
+		 * @return Returns the code.
 		 */
-		public String getNo() {
-			return no;
+		public String getCode() {
+			return code;
 		}
 
 		/**
-		 * @return Returns the des.
+		 * @return Returns the description.
 		 */
-		public String getDes() {
-			return des;
+		public String getDescription() {
+			return description;
 		}
 		
 		/**
@@ -57,26 +62,26 @@ public enum ${c.modelName}ModelKeyEnum implements Serializable,ModelEnumService 
 		/**
 		 * 通过枚举<code>des</code>获得枚举
 		 * 
-		 * @param des
+		 * @param description
 		 * @return
 		 */
-		public static ${c.modelName}ModelKeyEnum getByDescription(String des) {
-			if(StringUtils.isBlank(des)){
+		public static ${c.modelName}ModelKeyEnum getByDescription(String description) {
+			if(description==null||"".equals(description)){
 				return null;
 			}
 			for (${c.modelName}ModelKeyEnum menum : values()) {
-				if (menum.getDes().equals(des)) {
+				if (menum.getDescription().equals(description)) {
 					return menum;
 				}
 			}
 			return null;
 		}
-		public static ${c.modelName}ModelKeyEnum getByNo(String no) {
-			if(StringUtils.isBlank(no)){
+		public static ${c.modelName}ModelKeyEnum getByNo(String code) {
+			if (code == null) {
 				return null;
 			}
 			for (${c.modelName}ModelKeyEnum menum : values()) {
-				if (menum.getNo().equals(no)) {
+				if (menum.getCode().equals(code)) {
 					return menum;
 				}
 			}
@@ -85,6 +90,6 @@ public enum ${c.modelName}ModelKeyEnum implements Serializable,ModelEnumService 
 
 		@Override
 		public String modelPrex() {
-			return this.getNo();
+			return this.getCode();
 		}
 }

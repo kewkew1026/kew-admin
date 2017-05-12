@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kew.boss.mapper.RoleMapper">
+    <resultMap type="Role" id="roleResultMap">
+        <id property="roleId" column="ROLE_ID" />
+        <result property="roleNm" column="ROLE_NM"/>
+        <result property="grpNm" column="GRP_NM"/>
+    </resultMap>
+    
+    <select id="getAllRole" resultMap="roleResultMap">
+        SELECT ROLE_ID, ROLE_NM FROM T_P_ROLE
+    </select>
+    
+    <select id="getRoleByName" parameterType="String" resultMap="roleResultMap">
+        SELECT ROLE_ID, ROLE_NM FROM T_P_ROLE WHERE ROLE_NM = #{roleNm}
+    </select>
+    
+     <select id="getRoleByCondition" parameterType="Role" resultMap="roleResultMap">
+        SELECT 
+        	tpr.ROLE_ID as ROLE_ID,
+        	tpr.ROLE_NM as ROLE_NM,
+        	(select group_concat(tpug.GRP_NM) from t_p_user_grp tpug,t_p_user_grp_role tpugr WHERE tpugr.ROLE_ID=tpr.ROLE_ID AND tpug.GRP_ID=tpugr.GRP_ID limit 1) as GRP_NM 
+    	FROM 
+    		T_P_ROLE tpr 
+       <where>
+		    <if test="roleNm!=null and roleNm!='' ">
+		        tpr.ROLE_NM like '%' #{roleNm} '%'
+		    </if>
+	   </where>
+    </select>
+    
+    <select id="getRoleTotal" parameterType="Role" resultType="int">
+        SELECT COUNT(1) FROM T_P_ROLE
+       <where>
+		    <if test="roleNm!=null and roleNm!='' ">
+		        ROLE_NM like '%' #{roleNm} '%'
+		    </if>
+	   </where>
+    </select>
+    
+    <select id="getRoleById" parameterType="long" resultMap="roleResultMap">
+        SELECT ROLE_ID, ROLE_NM FROM T_P_ROLE WHERE ROLE_ID = #{roleId}
+    </select>
+    
+    <select id="isEnableDelRole" parameterType="long" resultType="long">
+        SELECT 
+            A.NUM+B.NUM+C.NUM
+        FROM
+            (SELECT COUNT(*) NUM FROM T_P_USER_GRP_ROLE G WHERE G.ROLE_ID=#{roleId}) A,
+            (SELECT COUNT(*) NUM FROM T_P_USER_ROLE U WHERE U.ROLE_ID=#{roleId}) B,
+            (SELECT COUNT(*) NUM FROM T_P_ROLE_FUN_OPT F WHERE F.ROLE_ID=#{roleId}) C
+    </select>
+    
+    <insert id="addRole" parameterType="Role">
+       
+        INSERT INTO
+            T_P_ROLE(ROLE_NM)
+        VALUES
+            (#{roleNm})
+    </insert>
+    
+    <update id="updateRole" parameterType="Role">
+        UPDATE T_P_ROLE SET ROLE_NM = #{roleNm} WHERE ROLE_ID = #{roleId}
+    </update>
+    
+    <delete id="deleteRole" parameterType="long">
+        DELETE FROM T_P_ROLE WHERE ROLE_ID = #{roleId}
+    </delete>
+    
+    <resultMap type="RoleTUserGroup" id="resultMap">
+		<id property="roleId" column="ROLE_ID" />
+		<result property="groupId" column="GRP_ID" />
+	</resultMap>
+
+	<select id="add" parameterType="RoleTUserGroup" resultMap="resultMap">
+	    INSERT INTO T_P_USER_GRP_ROLE
+	      (ROLE_ID, GRP_ID)
+	    VALUES
+	      (#{roleId, jdbcType=INTEGER}, #{groupId, jdbcType=INTEGER})
+	</select>
+
+	<update id="del" parameterType="Integer">
+		DELETE FROM T_P_USER_GRP_ROLE WHERE ROLE_ID = #{roleId}
+	</update>
+</mapper> 

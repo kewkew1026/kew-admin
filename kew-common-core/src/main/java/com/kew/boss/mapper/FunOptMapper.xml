@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kew.boss.mapper.FunOptMapper">
+
+	<resultMap type="FunOpt" id="resultMap">
+		<id property="funOptId" column="FUN_OPT_ID" />
+		<result property="funOptNm" column="FUN_OPT_NM" />
+		<result property="url" column="URL" />
+		<result property="remarks" column="REMARKS" />
+	</resultMap>
+	
+	<select id="getByUrl" resultMap="resultMap">
+		SELECT FUN_OPT_ID, FUN_OPT_NM, URL, REMARKS
+		  FROM T_P_FUN_OPT
+		 WHERE URL = #{0}
+	</select>
+	
+	<select id="getByUrlNotFunOptId" resultMap="resultMap">
+		SELECT FUN_OPT_ID, FUN_OPT_NM, URL, REMARKS
+		  FROM T_P_FUN_OPT
+		 WHERE URL = #{0} AND FUN_OPT_ID != #{1}
+	</select>
+	
+	<select id="data" resultMap="resultMap">
+		 SELECT FUN_OPT_ID, FUN_OPT_NM, URL, REMARKS FROM T_P_FUN_OPT ORDER BY FUN_OPT_NM
+	</select>
+
+	<select id="findById" resultMap="resultMap">
+		SELECT FUN_OPT_ID, FUN_OPT_NM, URL, REMARKS
+		  FROM T_P_FUN_OPT
+		 WHERE FUN_OPT_ID = #{funOptId}
+	</select>
+
+	<insert id="add">
+    INSERT INTO T_P_FUN_OPT
+      (FUN_OPT_NM, URL, REMARKS)
+    VALUES
+      (
+       #{funOptNm,jdbcType=VARCHAR},
+       #{url,jdbcType=VARCHAR},
+       #{remarks,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="update" parameterType="FunOpt">
+		UPDATE T_P_FUN_OPT
+		   SET FUN_OPT_NM = #{funOptNm}, URL = #{url}, REMARKS = #{remarks}
+		 WHERE FUN_OPT_ID = #{funOptId}
+	</update>
+
+	<update id="del" parameterType="FunOpt" >
+		DELETE FROM T_P_FUN_OPT WHERE FUN_OPT_ID = #{funOptId}
+	</update>
+	
+	<select id="findByRoleFunOpt" parameterType="long" resultMap="resultMap">
+		SELECT FUN_OPT_ID, FUN_OPT_NM, URL, REMARKS
+		  FROM T_P_FUN_OPT
+		 WHERE FUN_OPT_ID IN
+		       (SELECT FUN_OPT_ID FROM T_P_ROLE_FUN_OPT WHERE ROLE_ID = #{roleId})
+		  ORDER BY FUN_OPT_NM
+	</select>
+	<select id="findByRoleUnFunOpt" parameterType="long" resultMap="resultMap">
+		SELECT FUN_OPT_ID, FUN_OPT_NM, URL, REMARKS
+		  FROM T_P_FUN_OPT
+		 WHERE FUN_OPT_ID NOT IN
+		       (SELECT FUN_OPT_ID FROM T_P_ROLE_FUN_OPT WHERE ROLE_ID = #{roleId})
+		  ORDER BY FUN_OPT_NM
+	</select>
+	
+	<select id="findFunOptByFunOpt" parameterType="FunOpt" resultMap="resultMap">
+		SELECT FUN_OPT_ID, FUN_OPT_NM, URL, REMARKS
+		  FROM T_P_FUN_OPT
+		  
+		  <where>
+		    <if test="funOptNm!=null and funOptNm!='' ">
+		        FUN_OPT_NM like '%' #{funOptNm} '%'
+		    </if>
+		    <if test="url!=null and url!='' ">
+		        AND URL like '%' #{url} '%'
+		    </if>
+	   	  </where>
+	   	   
+	   	  ORDER BY FUN_OPT_NM,URL
+	</select>
+	
+	<select id="getTotal" parameterType="FunOpt" resultType="int">
+		SELECT count(1)
+		  FROM T_P_FUN_OPT
+		  <where>
+		    <if test="funOptNm!=null and funOptNm!='' ">
+		        FUN_OPT_NM like '%' #{funOptNm} '%'
+		    </if>
+		    <if test="url!=null and url!='' ">
+		        AND URL like '%' #{url} '%'
+		    </if>
+	   	  </where>
+	   	 
+	</select>
+	
+	<select id="getFunOptUrlByUserId" parameterType="long" resultType="string">
+		SELECT F.URL
+		  FROM T_P_FUN_OPT F
+		  JOIN T_P_ROLE_FUN_OPT RF
+		    ON F.FUN_OPT_ID = RF.FUN_OPT_ID
+		  JOIN T_P_ROLE R
+		    ON RF.ROLE_ID = R.ROLE_ID
+		 WHERE R.ROLE_ID IN
+		       (SELECT GR.ROLE_ID
+		           FROM T_P_USER_GRP_ROLE GR
+		           JOIN T_P_USER_GRP G
+		             ON GR.GRP_ID = G.GRP_ID
+		           JOIN T_P_USER_GRP_USER GU
+		             ON G.GRP_ID = GU.GRP_ID
+		          WHERE GU.USER_ID = #{userId} UNION ALL
+		        SELECT UR.ROLE_ID FROM T_P_USER_ROLE UR WHERE UR.USER_ID = #{userId})
+	</select>
+	
+	<select id="isCouldDelete" parameterType="long" resultType="long">
+        SELECT 
+            A.NUM+B.NUM
+        FROM
+            (SELECT COUNT(*) NUM FROM T_P_MENUE G WHERE G.FUN_OPT_ID=#{funOptId}) A,
+            (SELECT COUNT(*) NUM FROM T_P_ROLE_FUN_OPT U WHERE U.FUN_OPT_ID=#{funOptId}) B
+    </select>
+	
+</mapper>

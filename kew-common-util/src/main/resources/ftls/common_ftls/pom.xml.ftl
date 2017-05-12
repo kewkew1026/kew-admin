@@ -10,6 +10,27 @@
     <packaging>jar</packaging>
     <name>${c.escape}{project.artifactId} v${c.escape}{project.version}</name>
     <dependencies>
+        <dependency>
+            <groupId>com.kew.admin</groupId>
+            <artifactId>kew-common-util</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>com.kew.admin</groupId>
+            <artifactId>kew-common-lang</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
     </dependencies>
 </project>

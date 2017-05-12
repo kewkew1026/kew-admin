@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kew.boss.mapper.RoleTFunOptMapper">
+
+	<resultMap type="RoleTFunOpt" id="resultMap">
+		<id property="roleid" column="ROLE_ID" />
+		<result property="funOptId" column="FUN_OPT_ID" />
+	</resultMap>
+
+	<select id="add">
+		INSERT INTO T_P_ROLE_FUN_OPT
+		  (ROLE_ID, FUN_OPT_ID)
+		VALUES
+		  (#{roleid, jdbcType=INTEGER}, #{funOptId, jdbcType=INTEGER})
+	</select>
+
+	<update id="del" parameterType="long">
+		DELETE FROM T_P_ROLE_FUN_OPT WHERE ROLE_ID = #{roleid}
+	</update>
+	
+	<select id="findByFunOptId" parameterType="integer" resultMap="resultMap">
+		SELECT ROLE_ID, FUN_OPT_ID
+		  FROM T_P_ROLE_FUN_OPT
+		 WHERE FUN_OPT_ID = #{funOptId}
+	</select>
+	
+</mapper>

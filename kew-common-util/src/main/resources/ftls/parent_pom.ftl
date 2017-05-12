@@ -15,16 +15,16 @@
 
     <modules>
         <module>kew-${c.groupId}-common</module>
-       <!-- <module>kew-${c.groupId}-api</module>  -->
+        <module>kew-${c.groupId}-api</module>
         <module>kew-${c.groupId}-basic</module>
         <module>kew-${c.groupId}-core</module>
-        <!--   <module>kew-${c.groupId}-innerapi</module>
+        <module>kew-${c.groupId}-innerapi</module>
         <module>kew-${c.groupId}-openapi</module>
         <module>kew-${c.groupId}-mps</module>
         <module>kew-${c.groupId}-website</module>
         <module>kew-${c.groupId}-boss</module>
         <module>kew-${c.groupId}-cms</module>
-        -->
+
     </modules>
 
     <properties>
@@ -37,10 +37,51 @@
         <mysql.connector.version>5.1.34</mysql.connector.version>
         <hessain.version>4.0.38</hessain.version>
         <commons.fileupload.version>3.1</commons.fileupload.version>
+        <kew.${c.groupId}.version>0.1</kew.${c.groupId}.version>
+        <kew.common.util.version>0.1</kew.common.util.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>com.kew.${c.groupId}</groupId>
+                <artifactId>kew-${c.groupId}-common</artifactId>
+                <version>${c.escape}{kew.${c.groupId}.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kew.${c.groupId}</groupId>
+                <artifactId>kew-${c.groupId}-api</artifactId>
+                <version>${c.escape}{kew.${c.groupId}.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kew.${c.groupId}</groupId>
+                <artifactId>kew-${c.groupId}-basic</artifactId>
+                <version>${c.escape}{kew.${c.groupId}.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kew.${c.groupId}</groupId>
+                <artifactId>kew-${c.groupId}-core</artifactId>
+                <version>${c.escape}{kew.${c.groupId}.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.kew.admin</groupId>
+                <artifactId>kew-common-util</artifactId>
+            <#noparse>
+                <version>${kew.common.util.version}</version>
+            </#noparse>
+            </dependency>
+
+            <dependency>
+                <groupId>com.kew.admin</groupId>
+                <artifactId>kew-common-lang</artifactId>
+            <#noparse>
+                <version>${kew.common.util.version}</version>
+            </#noparse>
+            </dependency>
+
+
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -138,7 +179,9 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
-                <scope>test</scope>
+            <#noparse>
+                <version>${springframework.version}</version>
+            </#noparse>
             </dependency>
         <#--提供activemq-->
             <dependency>

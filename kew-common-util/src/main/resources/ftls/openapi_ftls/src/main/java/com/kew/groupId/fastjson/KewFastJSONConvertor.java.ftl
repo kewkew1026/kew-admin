@@ -18,74 +18,74 @@ import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 
 public class kewFastJsonHttpMessageConverter extends FastJsonHttpMessageConverter {
 
-public final static Charset UTF8     = Charset.forName("UTF-8");
+    public final static Charset UTF8     = Charset.forName("UTF-8");
 
-private Charset             charset  = UTF8;
+    private Charset             charset  = UTF8;
 
-private SerializerFeature[] features = new SerializerFeature[0];
+    private SerializerFeature[] features = new SerializerFeature[0];
 
-public kewFastJsonHttpMessageConverter(){
-super();
-}
+    public kewFastJsonHttpMessageConverter(){
+        super();
+    }
 
-@Override
-protected boolean supports(Class<?> clazz) {
-return true;
-}
+    @Override
+    protected boolean supports(Class<?> clazz) {
+        return true;
+    }
 
-public Charset getCharset() {
-return this.charset;
-}
+    public Charset getCharset() {
+     return this.charset;
+    }
 
-public void setCharset(Charset charset) {
-this.charset = charset;
-}
+    public void setCharset(Charset charset) {
+        this.charset = charset;
+    }
 
-public SerializerFeature[] getFeatures() {
-return features;
-}
+    public SerializerFeature[] getFeatures() {
+        return features;
+    }
 
-public void setFeatures(SerializerFeature... features) {
-this.features = features;
-}
+    public void setFeatures(SerializerFeature... features) {
+         this.features = features;
+    }
 
-@Override
-protected Object readInternal(Class<? extends Object> clazz, HttpInputMessage inputMessage) throws IOException,
-HttpMessageNotReadableException {
+    @Override
+    protected Object readInternal(Class<? extends Object> clazz, HttpInputMessage inputMessage) throws IOException,
+    HttpMessageNotReadableException {
 
-ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-InputStream in = inputMessage.getBody();
+        InputStream in = inputMessage.getBody();
 
-byte[] buf = new byte[1024];
-for (;;) {
-int len = in.read(buf);
-if (len == -1) {
-break;
-}
+        byte[] buf = new byte[1024];
+        for (;;) {
+            int len = in.read(buf);
+            if (len == -1) {
+            break;
+            }
 
-if (len > 0) {
-baos.write(buf, 0, len);
-}
-}
+            if (len > 0) {
+             baos.write(buf, 0, len);
+            }
+        }
 
-byte[] bytes = baos.toByteArray();
-return JSON.parseObject(bytes, 0, bytes.length, charset.newDecoder(), clazz);
-}
+        byte[] bytes = baos.toByteArray();
+        return JSON.parseObject(bytes, 0, bytes.length, charset.newDecoder(), clazz);
+    }
 
-@Override
-protected void writeInternal(Object obj, HttpOutputMessage outputMessage) throws IOException,HttpMessageNotWritableException {
-if (obj instanceof JSONPObject) {
-JSONPObject jsonp = (JSONPObject) obj;
-OutputStream out = outputMessage.getBody();
-String text = jsonp.getFunction() + "(" + JSON.toJSONString(jsonp, getFeatures()) + ")";
-System.out.println(text);
-byte[] bytes = text.getBytes(getCharset());
-out.write(bytes);
-} else {
-super.writeInternal(obj, outputMessage);
-}
-}
+    @Override
+    protected void writeInternal(Object obj, HttpOutputMessage outputMessage) throws IOException,HttpMessageNotWritableException {
+        if (obj instanceof JSONPObject) {
+            JSONPObject jsonp = (JSONPObject) obj;
+            OutputStream out = outputMessage.getBody();
+            String text = jsonp.getFunction() + "(" + JSON.toJSONString(jsonp, getFeatures()) + ")";
+            System.out.println(text);
+            byte[] bytes = text.getBytes(getCharset());
+            out.write(bytes);
+        } else {
+             super.writeInternal(obj, outputMessage);
+        }
+    }
 
 }
 
