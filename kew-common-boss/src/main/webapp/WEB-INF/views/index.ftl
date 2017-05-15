@@ -421,7 +421,7 @@
     }
 </style>
 </head>
-<body data-type="index">
+<body data-type="index" class="theme-white">
 <script src="${res}/assets/js/theme.js"></script>
 
 <div class="am-g tpl-g">
