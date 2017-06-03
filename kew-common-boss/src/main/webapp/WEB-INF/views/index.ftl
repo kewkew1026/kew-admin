@@ -3,7 +3,7 @@
 <head>
 <title>运营系统风控管理平台</title>
 <#include "/common/resources.ftl"/>
-    <script src="${res}/assets/js/echarts.min.js"></script>
+    <#--<script src="${res}/assets/js/echarts.min.js"></script>-->
     <link rel="stylesheet" href="${res}/assets/css/amazeui.min.css" />
     <link rel="stylesheet" href="${res}/assets/css/amazeui.datatables.min.css" />
     <link rel="stylesheet" href="${res}/assets/css/app.css">
@@ -319,13 +319,13 @@
         margin-left: -1px;
     }
     .tabs-scroller-left {
-        background: #F2F2F2 url('images/tabs_icons.png') no-repeat 1px center;
+        background: #F2F2F2 url('${img}/tabs_icons.png') no-repeat 1px center;
     }
     .tabs-scroller-right {
-        background: #F2F2F2 url('images/tabs_icons.png') no-repeat -15px center;
+        background: #F2F2F2 url('${img}/tabs_icons.png') no-repeat -15px center;
     }
     .tabs li a.tabs-close {
-        background: url('images/tabs_icons.png') no-repeat -34px center;
+        background: url('${img}/tabs_icons.png') no-repeat -34px center;
     }
     .tabs li a.tabs-inner:hover {
         background: #e6e6e6;
@@ -419,6 +419,11 @@
         filter: none;
         border-color: #D4D4D4;
     }
+
+    .tabs-closable {
+        padding-right: 12px;
+    }
+
 </style>
 </head>
 <body data-type="index" class="theme-white">
@@ -610,7 +615,7 @@
                     <ul class="sidebar-nav sidebar-nav-sub">
                         <#list menue.childrenMenueList as sub>
                             <li class="sidebar-nav-link">
-                                <a href="#" onclick="openTab('${ctx}/${sub.menueUrl}', '${sub.menueNm}')" class="">
+                                <a href="#" onclick="openTab('${ctx}${sub.menueUrl}', '${sub.menueNm}')" class="">
                                     <i class="am-icon-home sidebar-nav-link-logo"></i> ${sub.menueNm}
                                 </a>
                             </li>
@@ -627,69 +632,46 @@
     <!-- 内容区域 -->
     <div class="tpl-content-wrapper">
 
-        <div class="tabs-header tabs-header-noborder" style="">
-            <div class="tabs-scroller-left" style="display: none;"></div>
-            <div class="tabs-scroller-right" style="display: none;"></div>
-            <div class="tabs-wrap" style="margin-left: 0px; margin-right: 0px; width: 1461px;">
-                <ul class="tabs" style="height: 33px;">
-                    <li class="tabs-first">
-                        <a href="javascript:void(0)" class="tabs-inner" style="height: 32px; line-height: 32px;">
-                            <span class="tabs-title">欢迎页</span>
-                            <span class="tabs-icon"></span>
-                        </a></li>
-                    <li class="tabs-last tabs-selected">
-                        <a href="javascript:void(0)" class="tabs-inner" style="height: 32px; line-height: 32px;">
-                            <span class="tabs-title tabs-closable tabs-with-icon">商品管理</span>
-                            <span class="tabs-icon icon-default"></span>
-                        </a>
-                        <a href="javascript:void(0)" class="tabs-close">
 
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
 
-        
-        <div title="" class="panel-body panel-body-noheader panel-body-noborder" style="">
-            <iframe scrolling="yes" frameborder="0" src="/shop-boss/shop/product/manage" style="width:100%;height:auto;min-height:923px;background-color:white;"></iframe>
-        </div>
+
 
 
     </div>
 </div>
 </div>
 <script src="${res}/assets/js/amazeui.min.js"></script>
+<script src="${js}/kew-0.1.js"></script>
 <script src="${res}/assets/js/app.js"></script>
 <script type="text/javascript" >
     var windows=[];
 
+    $(function () {
+        kew.tabpanel({
+            root:".tpl-content-wrapper",
+            defaultPages:[{
+                tabType:"div",
+                title:"欢迎页",
+                isClosed:false,
+                inner:"欢迎使用运营管理平台"
+            },{
+                tabType:"iframe",
+                title:"菜单管理",
+                isClosed:true,
+                src:"${ctx}/menue/list"
+            }]
+        });
+
+
+    });
+
     function openTab(url, title){
-        $("#titleList").children("ul>li").removeClass("am-active");
-        $("#tabList").children("div").removeClass("am-active");
-
-        var tt = $('a[title='+title+']');
-
-
-        if (tt.length>0){//如果tab已经存在,则选中并刷新该tab
-            tt.parent().addClass("am-active");
-            $(window.frames[url]).parent().addClass("am-active");
-            window.frames[url].contentWindow.location.reload();
-        } else {
-            var content;
-
-            if (url){
-                content = $(' <div data-tab-panel-'+(windows.length+1)+' class="am-tab-panel am-active"><iframe scrolling="yes" id="'+url+'" frameborder="0"  src="'+url+'" style="width:100%;height:auto;min-height:1800px;background-color:white;"></iframe></div>');
-            } else {
-                content = '未实现';
-            }
-
-            windows.push(content);
-            $("#tabList").append(content);
-            content.addClass("am-active");
-            $("#titleList").append(  '<li class="am-active"><a title='+title+' href="[data-tab-panel-'+windows.length+']">'+title+'</a><a class="tabs-close" href="javascript:void(0)">x</a></li>');
-        }
-
+       kew.tabpanel.addTab({
+           tabType:"iframe",
+           src:url,
+           title:title,
+           isClosed:true
+       });
     }
 
 </script>

@@ -30,4 +30,7 @@ public class SysConstants {
      */
     public static final String SESSION_USERINFO = "SESSION_USER_INFO";
 
+    public static final long MENU_DEFAULT_ID = 1l;
+    public static final long MENU_COMBOX_ID = 1l;
+    public static final String MENU_COMBOX_TEXT = "";
 }
