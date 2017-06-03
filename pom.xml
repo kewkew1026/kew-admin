@@ -7,7 +7,7 @@
     <groupId>com.kew.admin</groupId>
     <artifactId>kew-deploy</artifactId>
     <packaging>pom</packaging>
-    <version>0.1</version>
+    <version>0.1-dev</version>
 
     <modules>
         <module>kew-common-util</module>
