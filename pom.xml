@@ -20,7 +20,7 @@
 
     <properties>
 
-        <kew.common.lang.version>0.1</kew.common.lang.version>
+        <kew.common.lang.version>0.1-dev</kew.common.lang.version>
 
         <jdk.version>1.8</jdk.version>
 

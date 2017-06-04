@@ -34,8 +34,6 @@
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager" />
         <property name="loginUrl" value="/user/login" />
-        <property name="successUrl" value="/user/list" />
-        <property name="unauthorizedUrl" value="/user/unauthorized" />
         <property name="filters">
             <util:map>
                 <entry key="urlf">
@@ -50,12 +48,6 @@
                 / = anon
                 /user/login = anon
                 /user/auth = anon
-                /user/unauthorized = anon
-                /index = authc
-                /index/top = authc
-                /index/left = authc
-                /index/main = authc
-                /index/bottom = authc
                 /** = urlf
             </value>
         </property>
